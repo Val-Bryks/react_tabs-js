@@ -1,18 +1,14 @@
-import React, { useState } from 'react';
 import cn from 'classnames';
 
-export const Tabs = ({ tabs }) => {
-  const [activeTabId, setActiveTabId] = useState(tabs[0].id);
-
-  const onTabSelected = id => {
-    setActiveTabId(id);
+export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
+  const activeTab = tabs.find(tab => tab.id === activeTabId) || {
+    title: tabs[0].title,
+    content: tabs[0].content,
   };
 
   return (
     <div className="section">
-      <h1 className="title">
-        Selected tab is {tabs.find(tab => tab.id === activeTabId).title}
-      </h1>
+      <h1 className="title">Selected tab is {activeTab.title}</h1>
 
       <div data-cy="TabsComponent">
         <div className="tabs is-boxed">
@@ -26,7 +22,11 @@ export const Tabs = ({ tabs }) => {
                 <a
                   href={`#${tab.id}`}
                   data-cy="TabLink"
-                  onClick={() => onTabSelected(tab.id)}
+                  onClick={() => {
+                    if (activeTabId !== tab.id) {
+                      onTabSelected(tab.id);
+                    }
+                  }}
                 >
                   {tab.title}
                 </a>
@@ -36,7 +36,7 @@ export const Tabs = ({ tabs }) => {
         </div>
 
         <div className="block" data-cy="TabContent">
-          {tabs.find(tab => tab.id === activeTabId).content}
+          {activeTab.content}
         </div>
       </div>
     </div>
